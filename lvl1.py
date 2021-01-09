@@ -7,13 +7,11 @@ user = ctypes.windll.user32
 pygame.init()
 size = (user.GetSystemMetrics(0), user.GetSystemMetrics(1))
 screen = pygame.display.set_mode(size)
+GRAVITY = 0.2
 
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
     image = pygame.image.load(fullname)
     if colorkey is not None:
         image = image.convert()
@@ -25,45 +23,70 @@ def load_image(name, colorkey=None):
     return image
 
 
-class Bomb(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):
     image = load_image("1.png", -1)
     image_back = load_image("2.png", -1)
 
     def __init__(self, *group):
         super().__init__(*group)
-        size = (user.GetSystemMetrics(0), user.GetSystemMetrics(1))
-        self.image = Bomb.image
+        self.size = (user.GetSystemMetrics(0), user.GetSystemMetrics(1))
+        self.image = Player.image
         self.rect = self.image.get_rect()
         self.rect.x = 0
-        self.rect.y = size[1] - self.rect.height
-        self.step = 1
-        self.image_back = Bomb.image_back
+        self.rect.y = self.size[1] - self.rect.height
+        self.step = 3
+        self.onGround = True
+        self.speedY = 0
 
-    def update(self):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.rect.x -= self.step
-                if self.rect.x < 0:
-                    self.rect.x = 0
-                self.image = self.image_back
-            if event.key == pygame.K_RIGHT:
-                self.rect.x += self.step
-                if self.rect.x > size[0] - self.rect.width:
-                    self.rect.x = size[0] - self.rect.width
-                self.image = Bomb.image
-
+    def update(self, left, right, up):
+        if left:
+            self.rect.x -= self.step
+            if self.rect.x < 0:
+                self.rect.x = 0
+            self.image = Player.image_back
+        if right:
+            self.rect.x += self.step
+            if self.rect.x > self.size[0] - self.rect.width:
+                self.rect.x = self.size[0] - self.rect.width
+            self.image = Player.image
+        if up:
+            if self.onGround:
+                self.speedY = -10
+                self.onGround = False
+        if not self.onGround:
+            self.speedY += GRAVITY
+            self.rect.y += self.speedY
+            if self.rect.y + self.rect.height > self.size[1]:
+                self.rect.y = self.size[1] - self.rect.height
+                self.onGround = True
+        
 
 if __name__ == '__main__':
     pygame.display.set_caption('xxx')
     running = True
-    all_sprites = pygame.sprite.Group()
-    Bomb(all_sprites)
+    sprites = pygame.sprite.Group()
+    hero = Player()
+    sprites.add(hero)
+    left = False
+    right = False
+    up = False
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DELETE:
-                    running = False
+        for e in pygame.event.get():
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_DELETE:
+                running = False
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_UP:
+                up = True
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_LEFT:
+                left = True
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_RIGHT:
+                right = True
+            if e.type == pygame.KEYUP and e.key == pygame.K_UP:
+                up = False
+            if e.type == pygame.KEYUP and e.key == pygame.K_RIGHT:
+                right = False
+            if e.type == pygame.KEYUP and e.key == pygame.K_LEFT:
+                left = False
         screen.fill((35, 35, 35))
-        all_sprites.draw(screen)
-        all_sprites.update()
+        sprites.draw(screen)
+        hero.update(left, right, up)
         pygame.display.flip()
