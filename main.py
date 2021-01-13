@@ -1,23 +1,52 @@
 import pygame
 import random
 import CONFIG
-import Actions, music
+
 
 pygame.init()
 screen = pygame.display.set_mode(CONFIG.SCREEN.size)
 clock = pygame.time.Clock()
 
+import Actions, music, Sprites
+
 FPS = 60
 i = 0
 v = 20
+left = False
+right = False
+up = False
+
+sprites = pygame.sprite.Group()
+hero = Sprites.Player(CONFIG.SCREEN.size)
+sprites.add(hero)
 
 running = True
 while running:
 
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DELETE:
-                running = False
+    for e in pygame.event.get():
+        if e.type == pygame.KEYDOWN and e.key == pygame.K_DELETE:
+            running = False
+        
+        elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
+            CONFIG.menu = False
+            CONFIG.startgame = True
+        
+        elif CONFIG.startgame:
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+                CONFIG.startgame = False
+                CONFIG.menu = True
+            elif e.type == pygame.KEYDOWN and (e.key == pygame.K_w or e.key == pygame.K_UP):
+                up = True
+            elif e.type == pygame.KEYDOWN and (e.key == pygame.K_a or e.key == pygame.K_LEFT):
+                left = True
+            elif e.type == pygame.KEYDOWN and (e.key == pygame.K_d or e.key == pygame.K_RIGHT):
+                right = True
+            elif e.type == pygame.KEYUP and (e.key == pygame.K_w or e.key == pygame.K_UP):
+                up = False
+            elif e.type == pygame.KEYUP and (e.key == pygame.K_a or e.key == pygame.K_LEFT):
+                right = False
+            elif e.type == pygame.KEYUP and (e.key == pygame.K_d or e.key == pygame.K_RIGHT):
+                left = False
     
     # START INTRO
     if CONFIG.startintro_1:
@@ -51,11 +80,20 @@ while running:
     
     # MAIN MENU
     if CONFIG.menu:
+        if CONFIG.fmenu:
+            music.menusound.play(-1)
         screen.fill((0, 0, 0))
         Actions.maincaption(screen, CONFIG.SCREEN.size, 139)
         Actions.pressenter(screen, CONFIG.SCREEN.size, 139)
         CONFIG.menu = False
-        
+    
+    # START GAME
+    if CONFIG.startgame:
+        CONFIG.fmenu = True
+        music.menusound.stop()
+        screen.fill((35, 35, 35))
+        sprites.draw(screen)
+        hero.update(left, right, up)
 
     clock.tick(FPS)
     pygame.display.flip()

@@ -11,3 +11,7 @@ startintro_1 = True
 startintro_2 = False
 startintro_3 = False
 menu = False
+
+fmenu = False
+
+startgame = False
