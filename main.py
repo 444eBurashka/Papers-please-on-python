@@ -9,7 +9,7 @@ clock = pygame.time.Clock()
 
 import Actions, music, Sprites
 
-FPS = 60
+FPS = 200
 i = 0
 v = 20
 left = False
@@ -44,9 +44,9 @@ while running:
             elif e.type == pygame.KEYUP and (e.key == pygame.K_w or e.key == pygame.K_UP):
                 up = False
             elif e.type == pygame.KEYUP and (e.key == pygame.K_a or e.key == pygame.K_LEFT):
-                right = False
-            elif e.type == pygame.KEYUP and (e.key == pygame.K_d or e.key == pygame.K_RIGHT):
                 left = False
+            elif e.type == pygame.KEYUP and (e.key == pygame.K_d or e.key == pygame.K_RIGHT):
+                right = False
     
     # START INTRO
     if CONFIG.startintro_1:
@@ -94,7 +94,6 @@ while running:
         screen.fill((35, 35, 35))
         sprites.draw(screen)
         hero.update(left, right, up)
-
     clock.tick(FPS)
     pygame.display.flip()
 
