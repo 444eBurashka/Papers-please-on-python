@@ -15,3 +15,6 @@ menu = False
 fmenu = False
 
 startgame = False
+
+# SREAMS
+scream1 = True

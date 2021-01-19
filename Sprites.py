@@ -24,12 +24,12 @@ class Player(pygame.sprite.Sprite):
     image = load_image("1.png", -1)
     image_back = load_image("2.png", -1)
 
-    def __init__(self, screensize, *group):
+    def __init__(self, game_size, *group):
         super().__init__(*group)
-        self.size = screensize
+        self.size = game_size
         self.image = Player.image
         self.rect = self.image.get_rect()
-        self.rect.x = 0
+        self.rect.x = 30
         self.rect.y = self.size[1] - self.rect.height
         self.step = 3
         self.onGround = True
@@ -57,33 +57,83 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y = self.size[1] - self.rect.height
                 self.onGround = True
         
+        
 
-if __name__ == '__main__':
-    pygame.display.set_caption('xxx')
-    running = True
-    sprites = pygame.sprite.Group()
-    hero = Player()
-    sprites.add(hero)
-    left = False
-    right = False
-    up = False
-    while running:
-        for e in pygame.event.get():
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_DELETE:
-                running = False
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_UP:
-                up = True
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_LEFT:
-                left = True
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_RIGHT:
-                right = True
-            if e.type == pygame.KEYUP and e.key == pygame.K_UP:
-                up = False
-            if e.type == pygame.KEYUP and e.key == pygame.K_RIGHT:
-                right = False
-            if e.type == pygame.KEYUP and e.key == pygame.K_LEFT:
-                left = False
-        screen.fill((35, 35, 35))
-        sprites.draw(screen)
-        hero.update(left, right, up)
-        pygame.display.flip()
+class Smth(pygame.sprite.Sprite):
+    image = load_image("3.png")
+
+    def __init__(self, screensize, x, *group):
+        super().__init__(*group)
+        self.image = Smth.image
+        self.g = False
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.size = screensize
+        self.rect.y = self.size[1] - self.rect.height - 700
+    
+    def change(self):
+        if self.g:
+            self.image = load_image("3.png")
+            self.g = False
+        else:
+            self.image = load_image("4.png")
+            self.g = True
+
+
+class PO(pygame.sprite.Sprite):
+    image = load_image("po.png")
+
+    def __init__(self, screensize, *group):
+        super().__init__(*group)
+        self.image = PO.image
+        self.rect = self.image.get_rect()
+        self.rect.x = 400
+        self.size = screensize
+        self.rect.y = self.size[1] - self.rect.height - 300
+
+
+class Puzzle1(pygame.sprite.Sprite):
+    image = load_image("puzzle1.png")
+
+    def __init__(self, screensize, *group):
+        super().__init__(*group)
+        self.image = Puzzle1.image
+        self.rect = self.image.get_rect()
+        self.rect.x = 2500
+        self.size = screensize
+        self.rect.y = self.size[1] - self.rect.height - 400
+
+
+class bricks(pygame.sprite.Sprite):
+    image = load_image("Bricks.png")
+
+    def __init__(self, screensize, x, y, *group):
+        super().__init__(*group)
+        self.image = bricks.image
+        self.g = False
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.size = screensize
+        self.rect.y = self.size[1] - self.rect.height - y
+
+
+class gg1(pygame.sprite.Sprite):
+    image = load_image("gg.png")
+
+    def __init__(self, screensize, *group):
+        super().__init__(*group)
+        self.image = gg1.image
+        self.g = False
+        self.rect = self.image.get_rect()
+        self.rect.x = 1500
+        self.size = screensize
+        self.rect.y = self.size[1] - self.rect.height - 600
+    
+
+    def change(self):
+        if self.g:
+            self.image = load_image("gg.png")
+            self.g = False
+        else:
+            self.image = load_image("alfavit.png")
+            self.g = True
