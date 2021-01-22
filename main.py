@@ -1,7 +1,7 @@
 import pygame
 import random
 import CONFIG
-import datetime
+from datetime import datetime
 from camera import *
 
 
@@ -38,6 +38,12 @@ sprites.add(hero)
 camera = Camera(camera_configure, game_size, CONFIG.SCREEN.size) 
 can_click_enter = False
 
+starttime = datetime.now()
+
+finish_key_1 = False
+finish_key_2 = False
+finish_key_3 = False
+
 running = True
 while running:
 
@@ -46,8 +52,12 @@ while running:
             running = False
         
         elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN and can_click_enter:
-            CONFIG.menu = False
-            CONFIG.startgame = True
+            if CONFIG.finish_enter:
+                CONFIG.menu = True
+                CONFIG.finishgame_menu = False
+            else:
+                CONFIG.menu = False
+                CONFIG.startgame = True
         
         elif CONFIG.startgame:
             if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
@@ -72,6 +82,18 @@ while running:
                         smth_lst[i].change()
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_e:
                 gg1.change()
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_c:
+                finish_key_1 = True
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_1:
+                finish_key_2 = True
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_4:
+                finish_key_3 = True
+            elif e.type == pygame.KEYUP and e.key == pygame.K_c:
+                finish_key_1 = False
+            elif e.type == pygame.KEYUP and e.key == pygame.K_1:
+                finish_key_2 = False
+            elif e.type == pygame.KEYUP and e.key == pygame.K_4:
+                finish_key_3 = False
     
     # START INTRO
     if CONFIG.startintro_1:
@@ -113,9 +135,13 @@ while running:
         Actions.maincaption(screen, CONFIG.SCREEN.size, 139)
         Actions.pressenter(screen, CONFIG.SCREEN.size, 139)
         CONFIG.menu = False
+        CONFIG.finish_enter = False
 
     # START GAME
     if CONFIG.startgame:
+        if CONFIG.time:
+            starttime = datetime.now()
+            CONFIG.time = False
         CONFIG.fmenu = True
         music.menusound.stop()
         if CONFIG.scream1:
@@ -131,7 +157,31 @@ while running:
         hero.update(left, right, up)
         for sprite in sprites:
             screen.blit(sprite.image, camera.apply(sprite))
+        
+        if finish_key_1 == finish_key_2 == finish_key_3 == True:
+            CONFIG.finishgame = True
+            CONFIG.startgame = False
+            i = 0
     
+    # FINISH GAME
+    if CONFIG.finishgame:
+        music.start_game.stop()
+        music.menusound.play(-1)
+        screen.fill((0, 0, 0))
+        if i < 140:
+            i += v / FPS
+        Actions.finalcaption(screen, CONFIG.SCREEN.size, i)
+        if i >= 140:
+            CONFIG.finishgame = False
+            CONFIG.finishgame_menu = True
+    
+    if CONFIG.finishgame_menu:
+        screen.fill((0, 0, 0))
+        Actions.finalcaption(screen, CONFIG.SCREEN.size, 139)
+        Actions.pressenter(screen, CONFIG.SCREEN.size, 139)
+        CONFIG.finishgame_menu = False
+        CONFIG.finish_enter = True
+        finish_key_1 = finish_key_2 = finish_key_3 = False
 
     clock.tick(FPS)
     pygame.display.flip()

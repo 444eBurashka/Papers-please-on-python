@@ -16,5 +16,12 @@ fmenu = False
 
 startgame = False
 
+finishgame = False
+finishgame_menu = False
+finish_enter = False
+
+# TIME
+time = True
+
 # SREAMS
 scream1 = True
