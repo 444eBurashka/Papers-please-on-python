@@ -170,14 +170,15 @@ while running:
         screen.fill((0, 0, 0))
         if i < 140:
             i += v / FPS
-        Actions.finalcaption(screen, CONFIG.SCREEN.size, i)
+        d = datetime.now() - starttime
+        Actions.finalcaption(screen, CONFIG.SCREEN.size, i, d)
         if i >= 140:
             CONFIG.finishgame = False
             CONFIG.finishgame_menu = True
     
     if CONFIG.finishgame_menu:
         screen.fill((0, 0, 0))
-        Actions.finalcaption(screen, CONFIG.SCREEN.size, 139)
+        Actions.finalcaption(screen, CONFIG.SCREEN.size, 139, d)
         Actions.pressenter(screen, CONFIG.SCREEN.size, 139)
         CONFIG.finishgame_menu = False
         CONFIG.finish_enter = True

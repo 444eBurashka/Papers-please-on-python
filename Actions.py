@@ -28,10 +28,21 @@ def pressenter(surf, screensize, i):
     surf.blit(text, (text_x, text_y))
 
 
-def finalcaption(surf, screensize, i):
+def finalcaption(surf, screensize, i, t):
     width, height = screensize
     font = pygame.font.Font('Fonts/18918.ttf', 100)
-    text = font.render("YOU WON", True, (i, 0, 0))
+    text = font.render(f"YOU WON IN {t}", True, (i, 0, 0))
     text_x = width // 2 - text.get_width() // 2
     text_y = height // 2 - text.get_height() // 2
+    surf.blit(text, (text_x, text_y))
+
+def TOP(surf, screensize, tt):
+    width, height = screensize
+    t = ''
+    for i in tt:
+        tt += i
+    font = pygame.font.Font('Fonts/17238.otf', 20)
+    text = font.render(f"TOP\n{t}", True, (139, 0, 0))
+    text_x = width // 2 - text.get_width() // 2 + 350
+    text_y = height // 2 - text.get_height() // 2 - 400
     surf.blit(text, (text_x, text_y))
